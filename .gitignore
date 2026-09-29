@@ -3,6 +3,7 @@ __pycache__/
 data/raw/
 data/processed/clean.csv
 *.pkl
+!models/phishing_model.pkl
 .env
 env/
 *.pyc

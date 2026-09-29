@@ -1,0 +1,18 @@
+{
+  "model": "RandomForestClassifier",
+  "method": "permutation_importance",
+  "importances": {
+    "url_length": 0.0556,
+    "hostname_length": 0.0375,
+    "path_length": 0.1179,
+    "num_dots": 0.0391,
+    "num_hyphens": 0.0259,
+    "num_digits": 0.0417,
+    "num_special_chars": 0.0254,
+    "num_subdomains": 0.0396,
+    "has_https": 0.0,
+    "has_ip_address": 0.0002,
+    "has_at_symbol": 0.0017,
+    "suspicious_keyword_count": 0.0203
+  }
+}

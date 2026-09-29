@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Analyze URL — PhishGuard{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">SECURITY ANALYSIS</p>
+  <h1>Check a website before you trust it.</h1>
+  <p class="hero-copy">Enter a complete website URL. PhishGuard analyzes URL characteristics and presents an understandable risk result.</p>
+</section>
+
+<section class="card form-card">
+  <form id="analyzeForm" action="/analyze" method="post">
+    <label for="url">Website URL</label>
+    <div class="input-row">
+      <input
+        id="url"
+        name="url"
+        type="text"
+        inputmode="url"
+        autocomplete="url"
+        placeholder="https://example.com/login"
+        aria-describedby="urlHelp urlError"
+        required
+      >
+      <button id="analyzeButton" type="submit">Analyze URL</button>
+    </div>
+    <p id="urlHelp" class="help-text">Use a complete URL beginning with http:// or https://</p>
+    <p id="urlError" class="field-error" role="alert"></p>
+  </form>
+
+  <div id="loading" class="loading" hidden aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    <span>Analysing address…</span>
+  </div>
+</section>
+
+<section class="info-grid" aria-label="How it works">
+  <article class="card">
+    <span class="info-icon">🔎</span>
+    <h2>Analyze</h2>
+    <p>Submit a website address for analysis.</p>
+  </article>
+  <article class="card">
+    <span class="info-icon">🧠</span>
+    <h2>Explain</h2>
+    <p>Review indicators and plain-language reasoning.</p>
+  </article>
+  <article class="card">
+    <span class="info-icon">🛡️</span>
+    <h2>Decide safely</h2>
+    <p>Use the recommendation before sharing sensitive information.</p>
+  </article>
+</section>
+{% endblock %}

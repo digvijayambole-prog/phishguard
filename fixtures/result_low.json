@@ -1,0 +1,25 @@
+{
+  "url": "https://example.com/",
+  "prediction": "legitimate",
+  "risk_score": 12,
+  "risk_level": "Low",
+  "indicators": [
+    {
+      "feature": "url_length",
+      "value": 28,
+      "label": "Short URL",
+      "why": "The address is relatively short and this feature alone is not a strong warning sign."
+    }
+  ],
+  "explanation": "This address shows relatively few characteristics associated with phishing.",
+  "recommendation": "Avoid entering passwords or payment information on this site.",
+  "technical": {
+    "features": {
+      "url_length": 20,
+      "num_dots": 1,
+      "has_https": 1
+    },
+    "model": "RandomForestClassifier",
+    "probability": 0.12
+  }
+}

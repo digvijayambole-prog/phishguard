@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "E_EMPTY_URL",
+    "message": "Please enter a complete website URL.",
+    "field": "url"
+  }
+}

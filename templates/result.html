@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Analysis Result — PhishGuard{% endblock %}
+{% block content %}
+<section class="result-header">
+  <a class="back-link" href="/">← Analyze another URL</a>
+  <p class="eyebrow">ANALYSIS RESULT</p>
+  <h1>Website risk analysis</h1>
+</section>
+
+<section class="card url-card">
+  <h2>1. Analysed URL</h2>
+  <code class="url-display">{{ url }}</code>
+</section>
+
+<section class="card verdict-card">
+  <div>
+    <h2>2. Prediction</h2>
+    <p class="prediction {% if prediction == 'phishing' %}prediction-danger{% else %}prediction-safe{% endif %}">
+      {{ prediction|title }}
+    </p>
+  </div>
+  <div>
+    <h2>4. Risk level</h2>
+    <p class="risk-badge risk-{{ risk_level|lower }}">{{ risk_level }}</p>
+  </div>
+</section>
+
+<section class="card score-card">
+  <div class="score-copy">
+    <h2>3. Risk score</h2>
+    <p class="score-number">{{ risk_score }} <span>/ 100</span></p>
+  </div>
+  <div class="gauge" style="--score: {{ risk_score }}%;" role="img" aria-label="Risk score {{ risk_score }} out of 100">
+    <div class="gauge-inner"><strong>{{ risk_score }}</strong><span>/ 100</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>5. Key indicators</h2>
+  {% if indicators %}
+  <div class="indicator-list">
+    {% for item in indicators %}
+    <article class="indicator">
+      <div class="indicator-title">⚠ {{ item.label }}</div>
+      <div class="indicator-value">Observed: {{ item.value }}</div>
+      <p>{{ item.why }}</p>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="notice">No key indicators were returned.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>6. Plain-language explanation</h2>
+  {% if explanation %}
+    <p class="explanation">{{ explanation }}</p>
+  {% else %}
+    <div class="notice warning">Explanation unavailable</div>
+  {% endif %}
+</section>
+
+<section class="card recommendation">
+  <h2>7. Safety recommendation</h2>
+  <p>🛡️ {{ recommendation }}</p>
+</section>
+
+<section class="card technical-card">
+  <details>
+    <summary>8. Technical details</summary>
+    <div class="technical-grid">
+      <div>
+        <h3>Model</h3>
+        <p>{{ technical.model }}</p>
+      </div>
+      <div>
+        <h3>Probability</h3>
+        <p>{{ technical.probability }}</p>
+      </div>
+      <div class="feature-box">
+        <h3>Features</h3>
+        <dl>
+        {% for key, value in technical.features.items() %}
+          <div><dt>{{ key }}</dt><dd>{{ value }}</dd></div>
+        {% endfor %}
+        </dl>
+      </div>
+    </div>
+  </details>
+</section>
+
+<div class="actions">
+  <a class="button secondary" href="/">Analyze another URL</a>
+</div>
+{% endblock %}

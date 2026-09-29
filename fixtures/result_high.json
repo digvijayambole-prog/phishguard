@@ -1,0 +1,49 @@
+{
+  "url": "https://secure-login.example.com/account/verify/password/reset/continue",
+  "prediction": "phishing",
+  "risk_score": 84,
+  "risk_level": "High",
+  "indicators": [
+    {
+      "feature": "url_length",
+      "value": 142,
+      "label": "Unusually long URL",
+      "why": "Very long web addresses can be used to push the real destination out of sight."
+    },
+    {
+      "feature": "num_subdomains",
+      "value": 4,
+      "label": "Many subdomains",
+      "why": "A long chain of subdomains can make a fake address look like a familiar one."
+    },
+    {
+      "feature": "num_dots",
+      "value": 6,
+      "label": "Many dot-separated parts",
+      "why": "Several domain components can make an address harder to interpret."
+    },
+    {
+      "feature": "has_ip",
+      "value": 1,
+      "label": "IP address in URL",
+      "why": "Using an IP address instead of a recognizable domain can be a warning sign."
+    },
+    {
+      "feature": "suspicious_token",
+      "value": 1,
+      "label": "Suspicious URL token",
+      "why": "Certain URL patterns are commonly seen in deceptive links."
+    }
+  ],
+  "explanation": "This address shows several characteristics commonly associated with phishing pages.",
+  "recommendation": "Avoid entering passwords or payment information on this site.",
+  "technical": {
+    "features": {
+      "url_length": 71,
+      "num_dots": 2,
+      "has_https": 1
+    },
+    "model": "RandomForestClassifier",
+    "probability": 0.84
+  }
+}

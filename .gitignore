@@ -4,3 +4,10 @@ data/raw/
 data/processed/clean.csv
 *.pkl
 .env
+env/
+*.pyc
+*.joblib
+.DS_Store
+.idea/
+.vscode/
+*.log

@@ -1,19 +1,10 @@
 from flask import Blueprint, jsonify, request
 
-from app import predictor, risk_engine
+from app import explainer, predictor, risk_engine
+from app.errors import AppError
 from app.validator import validate_url
 
 bp = Blueprint("main", __name__)
-
-# TEMPORARY: moves to explainer.py in Phase 3.
-RECOMMENDATIONS = {
-    "Low": "No strong warning signs were found. Normal caution still applies "
-           "- check the address bar before signing in anywhere.",
-    "Medium": "Some characteristics of this address are unusual. Do not enter "
-              "passwords or payment details unless you are certain the site is genuine.",
-    "High": "This address shows several characteristics commonly seen in phishing "
-            "pages. Avoid entering passwords or payment information on this site.",
-}
 
 
 @bp.route("/analyze", methods=["POST"])
@@ -28,14 +19,21 @@ def analyze():
     score = risk_engine.calculate(probability, features)
     level = risk_engine.get_level(score)
 
+    try:
+        indicators = explainer.build_indicators(features)
+        explanation = explainer.summarize(level, indicators)
+        recommendation = explainer.RECOMMENDATIONS[level]
+    except Exception:
+        raise AppError("E_EXPLANATION_FAILURE")
+
     return jsonify({
         "url": url,
         "prediction": "phishing" if label == 1 else "legitimate",
         "risk_score": score,
         "risk_level": level,
-        "indicators": [],  # TEMPORARY: filled by the explainer in Phase 3
-        "explanation": "Detailed explanation is not available yet.",
-        "recommendation": RECOMMENDATIONS[level],
+        "indicators": indicators,
+        "explanation": explanation,
+        "recommendation": recommendation,
         "technical": {
             "features": features,
             "model": predictor.model.name,

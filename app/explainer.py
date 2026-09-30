@@ -1,30 +1,18 @@
 """Rule catalogue (one rule per feature). Explainer functions are added in Phase 3."""
 
 RULES = [
-    {"feature": "url_length", "triggers_when": lambda v: v > 75,
-     "label": "Unusually long URL",
-     "why": "Very long web addresses can be used to push the real destination out of sight in the address bar."},
-    {"feature": "hostname_length", "triggers_when": lambda v: v > 30,
+    {"feature": "hostname_length", "triggers_when": lambda v: v >= 27,
      "label": "Unusually long domain name",
      "why": "Long domain names are sometimes used to imitate a trusted brand or to bury the part that identifies the real site."},
-    {"feature": "path_length", "triggers_when": lambda v: v > 40,
-     "label": "Unusually long path after the domain",
-     "why": "A long trail of folders and file names after the domain can be used to make an address look official or to hide what matters."},
-    {"feature": "num_dots", "triggers_when": lambda v: v > 3,
+    {"feature": "num_dots", "triggers_when": lambda v: v >= 3,
      "label": "Many dots in the address",
      "why": "A lot of dots often means several sections are stacked before the real domain, which can make a fake address look genuine."},
-    {"feature": "num_hyphens", "triggers_when": lambda v: v >= 3,
-     "label": "Several hyphens in the address",
-     "why": "Hyphens are often used to string together brand-like words, such as invented 'secure' or 'login' names."},
-    {"feature": "num_digits", "triggers_when": lambda v: v > 10,
-     "label": "Many digits in the address",
-     "why": "Long runs of numbers are uncommon in genuine website names and are often seen in automatically generated addresses."},
-    {"feature": "num_special_chars", "triggers_when": lambda v: v >= 3,
-     "label": "Unusual symbols in the address",
-     "why": "Symbols such as ?, =, & or % are common in tracking and redirect links, which are sometimes used to hide the final destination."},
-    {"feature": "num_subdomains", "triggers_when": lambda v: v >= 3,
-     "label": "Many sub-domains",
+    {"feature": "num_subdomains", "triggers_when": lambda v: v >= 2,
+     "label": "Several sub-domains",
      "why": "Extra sections before the main domain can be used to make an address appear to belong to a trusted company."},
+    {"feature": "suspicious_keyword_count", "triggers_when": lambda v: v >= 1,
+     "label": "Sensitive words in the address",
+     "why": "Words like 'login', 'verify' or 'account' in an address are often associated with pages trying to look like real sign-in pages."},
     {"feature": "has_https", "triggers_when": lambda v: v == 0,
      "label": "Connection is not encrypted (no HTTPS)",
      "why": "Genuine sign-in pages almost always use an encrypted connection, so its absence is unusual for a page asking for personal details."},
@@ -34,9 +22,6 @@ RULES = [
     {"feature": "has_at_symbol", "triggers_when": lambda v: v == 1,
      "label": "Address contains an @ symbol",
      "why": "Browsers ignore the text before an @ symbol in an address, which can be used to disguise the real destination."},
-    {"feature": "suspicious_keyword_count", "triggers_when": lambda v: v >= 2,
-     "label": "Sensitive words in the address",
-     "why": "Words like 'login', 'verify' or 'account' are often associated with pages trying to look like real sign-in pages."},
 ]
 
 TOTAL_RULES = len(RULES)
@@ -106,8 +91,8 @@ def summarize(level, indicators):
     if n == 0:
         if level == "Low":
             return "No common warning signs were found in the structure of this web address."
-        return ("No specific warning sign could be pointed out in the structure of this "
-                "address, but its overall pattern still looks unusual.")
+        return ("The automated check rates this address as risky, but no single clear "
+                "warning sign can be pointed out.")
     top = "; ".join(i["label"] for i in indicators[:3])
     noun = "characteristic" if n == 1 else "characteristics"
     return (f"This address shows {n} {noun} commonly associated with phishing pages. "

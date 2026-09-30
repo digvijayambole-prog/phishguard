@@ -25,8 +25,7 @@ def analyze():
     features = predictor.extract(url)
     label, probability = predictor.predict(features)
 
-    # TEMPORARY score: replaced by risk_engine.calculate() in Phase 2.
-    score = round(100 * probability)
+    score = risk_engine.calculate(probability, features)
     level = risk_engine.get_level(score)
 
     return jsonify({

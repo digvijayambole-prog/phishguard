@@ -10,3 +10,4 @@ RISK_THRESHOLDS = {"Low": (0, 33), "Medium": (34, 66), "High": (67, 100)}
 
 MODEL_PATH = BASE_DIR / "models" / "phishing_model.pkl"
 SCHEMA_PATH = BASE_DIR / "models" / "feature_schema.json"
+IMPORTANCE_PATH = BASE_DIR / "models" / "feature_importance.json"

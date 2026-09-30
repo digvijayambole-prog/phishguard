@@ -36,7 +36,7 @@ def analyze():
         "recommendation": recommendation,
         "technical": {
             "features": features,
-            "model": predictor.model.name,
+            "model": predictor.MODEL_NAME,
             "probability": round(probability, 2),
         },
     })

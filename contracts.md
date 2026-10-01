@@ -51,7 +51,7 @@ Full example in [docs/API.md](docs/API.md).
 
 `{ "error": { "code": ..., "message": ..., "field": ... } }`
 
-Nine codes, no additions. Always show the message exactly as sent.
+Ten codes. E_RATE_LIMIT was added with team-lead approval; no further additions. Always show the message exactly as sent.
 
 | Code | HTTP | Message |
 |---|---|---|
@@ -64,6 +64,7 @@ Nine codes, no additions. Always show the message exactly as sent.
 | E_PREDICTION_INVALID | 500 | This URL could not be analysed. |
 | E_EXPLANATION_FAILURE | 500 | The analysis completed but could not be explained. |
 | E_INTERNAL | 500 | Something went wrong. Please try again. |
+| E_RATE_LIMIT | 429 | Too many requests. Please wait a minute and try again. |
 
 ## Security rules
 

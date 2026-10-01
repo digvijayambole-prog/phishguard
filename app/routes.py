@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, render_template, request
 
-from app import explainer, predictor, risk_engine
+from app import explainer, limiter, predictor, risk_engine
 from app.errors import AppError
 from app.validator import validate_url
 
@@ -17,8 +17,8 @@ def wants_html():
 def index():
     return render_template("index.html")
 
-
 @bp.route("/analyze", methods=["POST"])
+@limiter.limit("10 per minute")
 def analyze():
     payload = request.get_json(silent=True) or {}
     raw = request.form.get("url") or payload.get("url")

@@ -174,3 +174,10 @@ def test_home_page_has_no_emoji_icons(client):
     html = client.get("/", headers=BROWSER).get_data(as_text=True)
     for emoji in ("\U0001F50E", "\U0001F9E0", "\U0001F6E1"):
         assert emoji not in html
+
+
+def test_oversized_request_body_is_rejected_with_frozen_shape(client):
+    r = client.post("/analyze", data={"url": "a" * 40000}, headers={"Accept": "*/*"})
+    assert r.status_code == 413
+    assert r.get_json()["error"]["code"] == "E_INTERNAL"
+    assert "Traceback" not in r.get_data(as_text=True)

@@ -288,3 +288,5 @@ button:active, .button:active { transform: translateY(1px); }
 .info-icon .icon { width: 1.75rem; height: 1.75rem; }
 .error-icon .icon { width: 1.6rem; height: 1.6rem; }
 .field-error:not(:empty) { margin-top: 8px; }
+
+.verdict-card .prediction, .level-card .risk-badge { margin: 0; }

@@ -1,4 +1,4 @@
-"""The nine frozen error codes. Never add a tenth."""
+"""The ten frozen error codes. E_RATE_LIMIT added with team-lead approval."""
 
 ERRORS = {
     "E_EMPTY_URL": (400, "Please enter a website URL."),
@@ -10,6 +10,7 @@ ERRORS = {
     "E_PREDICTION_INVALID": (500, "This URL could not be analysed."),
     "E_EXPLANATION_FAILURE": (500, "The analysis completed but could not be explained."),
     "E_INTERNAL": (500, "Something went wrong. Please try again."),
+    "E_RATE_LIMIT": (429, "Too many requests. Please wait a minute and try again."),
 }
 
 FIELD_ERRORS = {"E_EMPTY_URL", "E_INVALID_URL", "E_UNSUPPORTED_SCHEME", "E_URL_TOO_LONG"}

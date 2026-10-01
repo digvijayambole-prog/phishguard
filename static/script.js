@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const resultTitle = document.getElementById("resultTitle");
+  if (resultTitle) resultTitle.focus();
+
   const form = document.getElementById("analyzeForm");
   if (!form) return;
 
@@ -6,6 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("analyzeButton");
   const loading = document.getElementById("loading");
   const error = document.getElementById("urlError");
+
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      button.disabled = false;
+      button.removeAttribute("aria-disabled");
+      loading.hidden = true;
+    }
+  });
 
   form.addEventListener("submit", (event) => {
     error.textContent = "";

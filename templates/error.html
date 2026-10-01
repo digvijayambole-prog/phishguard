@@ -3,12 +3,14 @@
 {% block content %}
 <section class="card error-panel">
   <p class="eyebrow">ANALYSIS STATUS</p>
-  <div class="error-icon" aria-hidden="true">!</div>
+  <div class="error-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 2 20h20z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></div>
   <h1>{{ error.message }}</h1>
   {% if error.code %}
   <p class="error-code">{{ error.code }}</p>
   {% endif %}
+  {% if error.code in ['E_FEATURE_FAILURE', 'E_PREDICTION_INVALID'] %}
   <p>Check the submitted address and try again.</p>
+  {% endif %}
   <a class="button" href="/">Back to analyzer</a>
 </section>
 {% endblock %}

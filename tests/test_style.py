@@ -57,3 +57,11 @@ def test_text_contrast_at_least_4_5(mode, palette, fg, bg):
 @pytest.mark.parametrize("fg,bg", UI_PAIRS)
 def test_ui_component_contrast_at_least_3(mode, palette, fg, bg):
     assert ratio(palette[fg], palette[bg]) >= 3.0, (mode, fg, bg)
+
+
+def test_reduced_motion_also_clears_animation_delays():
+    assert "animation-delay: 0s !important" in CSS
+
+
+def test_gauge_uses_registered_number_property():
+    assert "@property --p" in CSS

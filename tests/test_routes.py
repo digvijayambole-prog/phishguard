@@ -90,3 +90,87 @@ def test_result_template_renders_every_fixture(name):
     with create_app().test_request_context():
         html = render_template("result.html", **data)
     assert "Risk score" in html and "Safety recommendation" in html
+
+
+import re
+
+
+def test_gauge_score_is_unitless_number(client):
+    html = analyze(client, "https://example.com/login").get_data(as_text=True)
+    assert re.search(r"--score:\s*\d+;", html)
+
+
+def test_result_page_uses_svg_icons_not_emoji(client):
+    html = analyze(client, "http://192.168.1.1/login").get_data(as_text=True)
+    assert "<svg" in html
+    assert "\U0001F6E1" not in html and "\u26A0" not in html
+
+
+def test_input_errors_render_inline_and_keep_the_url(client):
+    r = analyze(client, "ftp://example.com/a")
+    html = r.get_data(as_text=True)
+    assert r.status_code == 400
+    assert 'id="analyzeForm"' in html
+    assert "Only http and https addresses can be analysed." in html
+    assert 'data-error-code="E_UNSUPPORTED_SCHEME"' in html
+    assert 'value="ftp://example.com/a"' in html
+
+
+def test_whitespace_only_gets_the_servers_message(client):
+    r = analyze(client, "   ")
+    assert r.status_code == 400
+    assert "Please enter a website URL." in r.get_data(as_text=True)
+
+
+def test_inline_error_echo_is_escaped(client):
+    r = analyze(client, '"><img src=x onerror=alert(1)>;')
+    html = r.get_data(as_text=True)
+    assert r.status_code == 400
+    assert "<img src=x" not in html and "&lt;img" in html
+
+
+def test_script_has_no_own_error_copy_and_form_defers_to_server(client):
+    js = (ROOT / "static" / "script.js").read_text(encoding="utf-8")
+    assert "Please enter" not in js
+    assert "novalidate" in client.get("/", headers=BROWSER).get_data(as_text=True)
+
+
+def test_home_page_has_no_emoji_icons(client):
+    html = client.get("/", headers=BROWSER).get_data(as_text=True)
+    for emoji in ("\U0001F50E", "\U0001F9E0", "\U0001F6E1"):
+        assert emoji not in html
+
+
+def test_input_errors_render_inline_and_keep_the_url(client):
+    r = analyze(client, "ftp://example.com/a")
+    html = r.get_data(as_text=True)
+    assert r.status_code == 400
+    assert 'id="analyzeForm"' in html
+    assert "Only http and https addresses can be analysed." in html
+    assert 'data-error-code="E_UNSUPPORTED_SCHEME"' in html
+    assert 'value="ftp://example.com/a"' in html
+
+
+def test_whitespace_only_gets_the_servers_message(client):
+    r = analyze(client, "   ")
+    assert r.status_code == 400
+    assert "Please enter a website URL." in r.get_data(as_text=True)
+
+
+def test_inline_error_echo_is_escaped(client):
+    r = analyze(client, '"><img src=x onerror=alert(1)>;')
+    html = r.get_data(as_text=True)
+    assert r.status_code == 400
+    assert "<img src=x" not in html and "&lt;img" in html
+
+
+def test_script_has_no_own_error_copy_and_form_defers_to_server(client):
+    js = (ROOT / "static" / "script.js").read_text(encoding="utf-8")
+    assert "Please enter" not in js
+    assert "novalidate" in client.get("/", headers=BROWSER).get_data(as_text=True)
+
+
+def test_home_page_has_no_emoji_icons(client):
+    html = client.get("/", headers=BROWSER).get_data(as_text=True)
+    for emoji in ("\U0001F50E", "\U0001F9E0", "\U0001F6E1"):
+        assert emoji not in html

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from werkzeug.exceptions import HTTPException
 
 from app.errors import AppError
@@ -14,6 +14,11 @@ def create_app():
     def respond(err, status):
         body = err.to_dict()
         if wants_html():
+            if err.field == "url":
+                # Input errors appear under the field, with what the user typed kept.
+                submitted = request.form.get("url", "")[:2048]
+                return render_template("index.html", error=body["error"],
+                                       submitted=submitted), status
             return render_template("error.html", **body), status
         return jsonify(body), status
 

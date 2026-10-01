@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
   const error = document.getElementById("urlError");
 
+  // The server's own message is shown under the field; put the cursor back in the box.
+  if (error.textContent.trim()) input.focus();
+
+  // Returning with the Back button must not leave the form locked.
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
       button.disabled = false;
@@ -18,24 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  form.addEventListener("submit", (event) => {
+  // All validation happens on the server so users always see its wording.
+  form.addEventListener("submit", () => {
     error.textContent = "";
-    const value = input.value.trim();
-
-    if (!value) {
-      event.preventDefault();
-      error.textContent = "Please enter a complete website URL.";
-      input.focus();
-      return;
-    }
-
-    if (!/^https?:\/\/.+/i.test(value)) {
-      event.preventDefault();
-      error.textContent = "Please enter a complete website URL.";
-      input.focus();
-      return;
-    }
-
     button.disabled = true;
     button.setAttribute("aria-disabled", "true");
     loading.hidden = false;

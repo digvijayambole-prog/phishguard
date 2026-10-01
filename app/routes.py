@@ -17,7 +17,7 @@ def wants_html():
 def index():
     return render_template("index.html")
 
-
+@limiter.limit("10 per minute")
 @bp.route("/analyze", methods=["POST"])
 def analyze():
     payload = request.get_json(silent=True) or {}

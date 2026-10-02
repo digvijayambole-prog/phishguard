@@ -23,6 +23,14 @@ def create_app():
     if hops.isdigit() and int(hops) > 0:
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=int(hops), x_proto=int(hops))
 
+    # Temporary diagnostic: set LOG_PROXY=1 to print the proxy headers once, so the
+    # right PROXY_HOPS value can be read off. Off by default. Turn it off afterwards.
+    if os.environ.get("LOG_PROXY") == "1":
+        @app.before_request
+        def log_proxy_headers():
+            print("PROXYDEBUG xff=%r remote=%r" % (
+                request.headers.get("X-Forwarded-For"), request.remote_addr), flush=True)
+
     @app.after_request
     def set_security_headers(response):
         response.headers["X-Content-Type-Options"] = "nosniff"

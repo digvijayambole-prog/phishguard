@@ -380,11 +380,15 @@ stylesheet: token-only colours, presence of both light and dark token
 blocks, reduced-motion support, and contrast ratios at every required
 colour pairing, in both themes — all 39 of these checks currently pass.
 
-**[fill in before submission]:** exact combined pass count across the
-full suite from the final merge (backend tests + frontend tests), and the
-manual demo checklist results (clean-clone startup, valid/invalid URL
-handling, all result fields visible, no stack trace anywhere, model loads
-correctly, no secrets in the repo).
+**Final combined suite:** 93 tests passed, 0 failed (backend routes,
+security, and validation tests plus the 39 frontend stylesheet tests),
+run from `main` after the last merge.
+
+**Manual demo checklist:** all 11 items passed — clean-clone startup,
+successful analysis of a valid URL, a useful error on an invalid URL,
+risk score visible, risk level visible, explanation visible,
+recommendation visible, technical details understandable, no stack trace
+anywhere, model loads correctly, and no secrets present in the repository.
 
 The system has also been exercised as a live deployment (Render), with
 production-specific hardening validated there directly: debug mode

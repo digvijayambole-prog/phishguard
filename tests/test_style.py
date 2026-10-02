@@ -65,3 +65,19 @@ def test_reduced_motion_also_clears_animation_delays():
 
 def test_gauge_uses_registered_number_property():
     assert "@property --p" in CSS
+
+
+def test_hidden_attribute_is_respected():
+    assert re.search(r"\[hidden\]\s*\{\s*display:\s*none\s*!important", CSS)
+
+
+def test_button_labels_never_wrap():
+    assert "white-space: nowrap" in CSS
+
+
+def test_hidden_attribute_is_respected():
+    assert re.search(r"\[hidden\]\s*\{\s*display:\s*none\s*!important", CSS)
+
+
+def test_button_labels_never_wrap():
+    assert "white-space: nowrap" in CSS

@@ -42,3 +42,47 @@ def test_security_headers_present(client):
     assert r.headers["X-Frame-Options"] == "DENY"
     assert r.headers["Referrer-Policy"] == "no-referrer"
     assert "default-src 'self'" in r.headers["Content-Security-Policy"]
+
+
+def _post(client, ip):
+    return client.post("/analyze", data={"url": "http://example.com"},
+                       headers={"X-Forwarded-For": ip})
+
+
+def test_forwarded_for_separates_clients_when_one_proxy_is_trusted(monkeypatch):
+    monkeypatch.setenv("PROXY_HOPS", "1")
+    client = create_app().test_client()
+    for _ in range(10):
+        _post(client, "203.0.113.1")
+    assert _post(client, "203.0.113.1").status_code == 429
+    assert _post(client, "203.0.113.2").status_code != 429
+
+
+def test_forwarded_for_is_ignored_by_default(monkeypatch):
+    monkeypatch.delenv("PROXY_HOPS", raising=False)
+    client = create_app().test_client()
+    for i in range(10):
+        _post(client, f"203.0.113.{i}")
+    assert _post(client, "203.0.113.99").status_code == 429
+
+
+def _post(client, ip):
+    return client.post("/analyze", data={"url": "http://example.com"},
+                       headers={"X-Forwarded-For": ip})
+
+
+def test_forwarded_for_separates_clients_when_one_proxy_is_trusted(monkeypatch):
+    monkeypatch.setenv("PROXY_HOPS", "1")
+    client = create_app().test_client()
+    for _ in range(10):
+        _post(client, "203.0.113.1")
+    assert _post(client, "203.0.113.1").status_code == 429
+    assert _post(client, "203.0.113.2").status_code != 429
+
+
+def test_forwarded_for_is_ignored_by_default(monkeypatch):
+    monkeypatch.delenv("PROXY_HOPS", raising=False)
+    client = create_app().test_client()
+    for i in range(10):
+        _post(client, f"203.0.113.{i}")
+    assert _post(client, "203.0.113.99").status_code == 429

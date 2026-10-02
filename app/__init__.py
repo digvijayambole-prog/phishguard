@@ -1,7 +1,10 @@
+import os
+
 from flask import Flask, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.exceptions import HTTPException
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.errors import AppError
 
@@ -13,12 +16,19 @@ def create_app():
     app.config.from_object("app.config")
     limiter.init_app(app)
 
+    # Behind a trusted proxy (e.g. Render) set PROXY_HOPS=1 so each visitor is
+    # rate-limited by their own address. Ignored by default, so a spoofed header
+    # cannot dodge the limit when running locally.
+    hops = os.environ.get("PROXY_HOPS", "0").strip()
+    if hops.isdigit() and int(hops) > 0:
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=int(hops), x_proto=int(hops))
+
     @app.after_request
     def set_security_headers(response):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "no-referrer"
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         return response
 
     from app.routes import bp, wants_html

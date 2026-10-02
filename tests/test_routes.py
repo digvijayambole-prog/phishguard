@@ -95,9 +95,6 @@ def test_result_template_renders_every_fixture(name):
 import re
 
 
-def test_gauge_score_is_unitless_number(client):
-    html = analyze(client, "https://example.com/login").get_data(as_text=True)
-    assert re.search(r"--score:\s*\d+;", html)
 
 
 def test_result_page_uses_svg_icons_not_emoji(client):
@@ -181,3 +178,29 @@ def test_oversized_request_body_is_rejected_with_frozen_shape(client):
     assert r.status_code == 413
     assert r.get_json()["error"]["code"] == "E_INTERNAL"
     assert "Traceback" not in r.get_data(as_text=True)
+
+
+def test_gauge_arc_is_set_by_attribute_not_inline_style(client):
+    html = analyze(client, "https://example.com/login").get_data(as_text=True)
+    assert re.search(r'stroke-dasharray="\d+ 100"', html)
+
+
+def test_no_inline_style_attributes_so_csp_can_stay_strict(client):
+    pages = [client.get("/", headers=BROWSER).get_data(as_text=True),
+             analyze(client, "https://example.com/login").get_data(as_text=True),
+             analyze(client, "ftp://example.com").get_data(as_text=True)]
+    for html in pages:
+        assert ' style="' not in html
+
+
+def test_gauge_arc_is_set_by_attribute_not_inline_style(client):
+    html = analyze(client, "https://example.com/login").get_data(as_text=True)
+    assert re.search(r'stroke-dasharray="\d+ 100"', html)
+
+
+def test_no_inline_style_attributes_so_csp_can_stay_strict(client):
+    pages = [client.get("/", headers=BROWSER).get_data(as_text=True),
+             analyze(client, "https://example.com/login").get_data(as_text=True),
+             analyze(client, "ftp://example.com").get_data(as_text=True)]
+    for html in pages:
+        assert ' style="' not in html

@@ -28,7 +28,11 @@
     <h2>3. Risk score</h2>
     <p class="score-number">{{ risk_score }} <span>/ 100</span></p>
   </div>
-  <div class="gauge" style="--score: {{ risk_score|int }};" role="img" aria-label="Risk score {{ risk_score }} out of 100">
+  <div class="gauge" role="img" aria-label="Risk score {{ risk_score }} out of 100">
+    <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <circle class="gauge-track" cx="60" cy="60" r="52"/>
+      <circle class="gauge-arc" cx="60" cy="60" r="52" pathLength="100" stroke-dasharray="{{ risk_score|int }} 100" transform="rotate(-90 60 60)"/>
+    </svg>
     <div class="gauge-inner"><strong>{{ risk_score }}</strong><span>/ 100</span></div>
   </div>
 </section>

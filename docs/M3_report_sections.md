@@ -73,12 +73,14 @@ Each indicator comes from a rule with an explicit trigger condition, a short lab
 
 1. The app never fetches, opens or DNS-resolves the submitted URL. It analyses the string only.
 2. The URL is never passed to `os.system`, `subprocess`, `eval`, `exec` or a file path. A source search of `app/` for network, subprocess, `eval` and `exec` calls returned nothing.
-3. No stack trace or filesystem path appears in a response body. Every error uses the frozen JSON shape with one of nine fixed messages, and 404 and 405 responses use the same shape. Automated tests check error responses for tracebacks and paths. Debug mode is off.
+3. No stack trace or filesystem path appears in a response body. Every error uses the frozen JSON shape with one of ten fixed messages, and 404 and 405 responses use the same shape. Automated tests check error responses for tracebacks and paths. Debug mode is off.
 
 **Input hardening.** Empty input, unsupported schemes (ftp, file, javascript, data), URLs over 2,048 characters, missing hostnames, invalid ports, control characters and the characters `; | & $` and backtick are all rejected with specific error codes. A URL without a scheme is normalised to `https://`.
+
+**Abuse protection.** `/analyze` accepts at most 10 requests per minute per client address (`E_RATE_LIMIT`, HTTP 429), request bodies are capped at 16 KB, and every response carries `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` and a restrictive `Content-Security-Policy` that forbids inline styles and scripts. Behind a hosting proxy the limiter reads the client address only when the deployment explicitly trusts one proxy hop.
 
 **Failure handling.** Six failure boundaries were simulated and each returns the correct code without a stack trace: missing model file, corrupt model file and reordered feature schema (all `E_MODEL_UNAVAILABLE`, the last with a critical startup log line); extractor exception (`E_FEATURE_FAILURE`); invalid model output (`E_PREDICTION_INVALID`); explainer exception (`E_EXPLANATION_FAILURE`). The simulations use temporary copies of the model files, so the real files are never modified.
 
 **Testing.** 61 backend tests and Member 4's 27 tests pass. **[fill in]** the final combined count after the last merge.
 
-**Known gaps.** The model file is loaded with `joblib` (pickle), so it must come only from a trusted source, which here is Member 2. There is no rate limiting or authentication, because the project runs locally. **[fill in]** response time measurements if the marking scheme asks for them.
+**Known gaps.** The model file is loaded with `joblib` (pickle), so it must come only from a trusted source, which here is Member 2. There is no authentication, and rate-limit counters are held in memory, so they reset when the server restarts. **[fill in]** response time measurements if the marking scheme asks for them.

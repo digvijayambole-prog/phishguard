@@ -86,3 +86,15 @@ def test_forwarded_for_is_ignored_by_default(monkeypatch):
     for i in range(10):
         _post(client, f"203.0.113.{i}")
     assert _post(client, "203.0.113.99").status_code == 429
+
+
+def test_proxy_diagnostic_is_silent_unless_enabled(monkeypatch, capsys):
+    monkeypatch.delenv("LOG_PROXY", raising=False)
+    create_app().test_client().get("/")
+    assert "PROXYDEBUG" not in capsys.readouterr().out
+
+
+def test_proxy_diagnostic_logs_when_enabled(monkeypatch, capsys):
+    monkeypatch.setenv("LOG_PROXY", "1")
+    create_app().test_client().get("/", headers={"X-Forwarded-For": "203.0.113.7"})
+    assert "PROXYDEBUG" in capsys.readouterr().out
